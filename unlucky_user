@@ -1,0 +1,18 @@
+import openpyxl                                 # 엑셀 패키지
+
+wb = openpyxl.load_workbook('dataset.xlsx')     #기존의 엑셀파일을 로드해서 wb에 저장
+ws = wb.active                                  # 현재 사용중인 sheet를 ws(wark sheet)에 저장
+
+for r in ws.rows:                               # 현재 시트에 있는 모든 열만큼 반복
+    row_index = r[0].row                        # 행 인덱스
+    tc = r[1].value                             # 2번째 열값인 try_count값
+    gc = r[2].value                             # 3번째 열값인 try_count값
+    if tc != "try_count":                       # 첫번째행인 헤더를 제외하고 계산하기 위한 if문, csv에서는 헤더함수
+        lp = 100*gc//tc                         # lp(Luck_point)를 Get_count값에 Try_count를 나눈 값의 몫을 구하고 100을 곱해서 몇%로 아이템을 획득하였는지 구한다.
+        if lp >= 4:                             # 평균값인 4%보다 같거나 높을경우 운없는 유저대상에서 제외되므로 조건문을 제시한다.
+            for num in range(3):                # 위의 조건일경우 제외대상이므로 운없는 유저의 정보만 남기기 위해 운좋은 유저의 정보를 제거한다.
+                r[num].value = None             # 행 제거
+
+
+
+wb.save('target_user.xlsx')                     # 원래의 데이터에 덮여씌우지 않고 새로운 파일에 운없는 유저들만 따로 저장한다.
